@@ -34,7 +34,7 @@ MLOps-Lab1/
 ├── Makefile                        # Automated development commands
 ├── pyproject.toml                  # Project metadata & dependencies (PEP 621)
 ├── uv.lock                         # Lock file generado por uv (reproducible env)
-└── README_EN.md                    # English version
+└── README.md
 ```
 
 ## Installation
