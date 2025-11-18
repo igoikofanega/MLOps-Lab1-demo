@@ -1,7 +1,5 @@
-.PHONY: install lint format test refactor all clean
-
 install:
-    pip install uv &&\
+	pip install uv &&\
 	uv sync
 
 lint:
