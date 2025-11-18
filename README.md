@@ -1,188 +1,193 @@
+```markdown
 # MLOps-Lab1 - Image Processing Application
 
 ![CI Pipeline](https://github.com/igoikofanega/MLOps-Lab1-Demo/actions/workflows/CI.yml/badge.svg)
 
-## Descripción
+## Description
 
-Aplicación de procesamiento de imágenes desarrollada para el Lab1 de MLOps. La aplicación permite realizar operaciones básicas sobre imágenes como predicción de clase (aleatoria), redimensionado, conversión a escala de grises y obtención de información.
+Image processing application developed for Lab1 of the MLOps course. The application allows basic image operations such as random class prediction, resizing, grayscale conversion, and retrieving image information.
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 MLOps-Lab1/
 ├── .github/
 │   └── workflows/
-│       └── CI.yml          # Pipeline de CI/CD
+│       └── CI.yml                  # CI/CD Pipeline (GitHub Actions)
 ├── mylib/
 │   ├── __init__.py
-│   └── operations.py       # Lógica de procesamiento
+│   └── operations.py               # Image processing logic
 ├── cli/
 │   ├── __init__.py
-│   └── cli.py              # Interfaz de línea de comandos
+│   └── cli.py                      # Command-line interface (Click)
 ├── api/
 │   ├── __init__.py
-│   └── api.py              # API con FastAPI
+│   └── api.py                      # FastAPI API
 ├── templates/
-│   └── home.html           # Página principal de la API
+│   └── home.html                   # Home page template for the API
 ├── tests/
 │   ├── __init__.py
-│   ├── test_operations.py  # Tests de la lógica
-│   ├── test_cli.py         # Tests del CLI
-│   └── test_api.py         # Tests de la API
-├── Makefile                # Comandos automatizados
-├── pyproject.toml          # Configuración del proyecto
-└── README.md
+│   ├── test_operations.py          # Unit tests for mylib
+│   ├── test_cli.py                 # CLI integration tests
+│   └── test_api.py                 # API integration tests
+├── .gitignore
+├── LICENSE                         # MIT License (o la que corresponda)
+├── Makefile                        # Automated development commands
+├── pyproject.toml                  # Project metadata & dependencies (PEP 621)
+├── uv.lock                         # Lock file generado por uv (reproducible env)
+└── README_EN.md                    # English version
 ```
 
-## Instalación
+## Installation
 
-### Requisitos previos
-- Python 3.12 o superior
-- uv (gestor de paquetes)
+### Prerequisites
+- Python 3.12 or higher
+- uv (package and virtual environment manager)
 
-### Pasos de instalación
+### Installation Steps
 
-1. Clonar el repositorio:
+1. Clone the repository:
 ```bash
 git clone https://github.com/YOUR_USERNAME/MLOps-Lab1.git
 cd MLOps-Lab1
 ```
 
-2. Crear y activar el entorno virtual:
+2. Create and activate the virtual environment:
 ```bash
 uv init
 uv sync
-source .venv/bin/activate  # En Linux/Mac
-# o
-.venv\Scripts\activate  # En Windows
+source .venv/bin/activate  # Linux/Mac
+# or
+.venv\Scripts\activate     # Windows
 ```
 
-3. Instalar dependencias:
+3. Install dependencies:
 ```bash
 make install
 ```
 
-## Uso
+## Usage
 
 ### Command Line Interface (CLI)
 
-#### Predecir clase de una imagen:
+#### Predict class of an image:
 ```bash
-uv run python -m cli.cli predict /home/alumno/Desktop/datos/inigo.goikoetxea/MLOps/imagen.jpg
+uv run python -m cli.cli predict /home/student/Desktop/data/inigo.goikoetxea/MLOps/image.jpg
 ```
 
-#### Redimensionar una imagen:
+#### Resize an image:
 ```bash
 uv run python -m cli.cli resize path/to/image.jpg 200 200
-uv run python -m cli.cli resize /home/alumno/Desktop/datos/inigo.goikoetxea/MLOps/imagen.jpg 200 200 --output resized.jpg
+uv run python -m cli.cli resize /home/student/Desktop/data/inigo.goikoetxea/MLOps/image.jpg 200 200 --output resized.jpg
 ```
 
-#### Convertir a escala de grises:
+#### Convert to grayscale:
 ```bash
 uv run python -m cli.cli grayscale path/to/image.jpg
-uv run python -m cli.cli grayscale /home/alumno/Desktop/datos/inigo.goikoetxea/MLOps/imagen.jpg --output gray.jpg
+uv run python -m cli.cli grayscale /home/student/Desktop/data/inigo.goikoetxea/MLOps/image.jpg --output gray.jpg
 ```
 
-#### Obtener información de una imagen:
+#### Get image information:
 ```bash
-uv run python -m cli.cli info /home/alumno/Desktop/datos/inigo.goikoetxea/MLOps/imagen.jpg
+uv run python -m cli.cli info /home/student/Desktop/data/inigo.goikoetxea/MLOps/image.jpg
 ```
 
 ### API (FastAPI)
 
-#### Iniciar el servidor:
+#### Start the server:
 ```bash
 uv run python -m api.api
 ```
 
-La API estará disponible en `http://localhost:8000`
+The API will be available at `http://localhost:8000`
 
-#### Endpoints disponibles:
+#### Available Endpoints:
 
-- **GET /** - Página principal
-- **POST /predict** - Predice la clase de una imagen
-  - Parámetros: `file` (imagen)
-- **POST /resize** - Redimensiona una imagen
-  - Parámetros: `file` (imagen), `width` (int), `height` (int)
-- **POST /grayscale** - Convierte una imagen a escala de grises
-  - Parámetros: `file` (imagen)
-- **POST /info** - Obtiene información de una imagen
-  - Parámetros: `file` (imagen)
+- **GET /** - Home page
+- **POST /predict** - Predicts the class of an image  
+  - Parameters: `file` (image)
+- **POST /resize** - Resizes an image  
+  - Parameters: `file` (image), `width` (int), `height` (int)
+- **POST /grayscale** - Converts an image to grayscale  
+  - Parameters: `file` (image)
+- **POST /info** - Gets image information  
+  - Parameters: `file` (image)
 
-#### Documentación interactiva:
-Una vez iniciado el servidor, visita `http://localhost:8000/docs` para ver la documentación interactiva de Swagger UI.
+#### Interactive Documentation:
+Once the server is running, visit `http://localhost:8000/docs` to access the interactive Swagger UI documentation.
 
-## Desarrollo
+## Development
 
-### Makefile - Comandos disponibles
+### Makefile - Available Commands
 
 ```bash
-make install    # Instalar todas las dependencias
-make format     # Formatear el código con Black
-make lint       # Analizar el código con Pylint
-make test       # Ejecutar los tests con pytest
-make refactor   # Formatear y analizar (format + lint)
-make all        # Ejecutar todo (install + format + lint + test)
-make clean      # Limpiar archivos temporales
+make install    # Install all dependencies
+make format     # Format code with Black
+make lint       # Static analysis with Pylint
+make test       # Run tests with pytest
+make refactor   # Format + lint
+make all        # Run everything (install + format + lint + test)
+make clean      # Clean temporary files
 ```
 
 ### Testing
 
-Ejecutar todos los tests:
+Run all tests:
 ```bash
 make test
 ```
 
-Ejecutar tests específicos:
+Run specific tests:
 ```bash
 uv run pytest tests/test_operations.py -v
 uv run pytest tests/test_cli.py -v
 uv run pytest tests/test_api.py -v
 ```
 
-Ver cobertura de tests:
+View test coverage:
 ```bash
 uv run pytest tests/ --cov=mylib --cov=cli --cov=api --cov-report=html
 ```
 
 ## CI/CD Pipeline
 
-El proyecto utiliza GitHub Actions para ejecutar automáticamente:
+The project uses GitHub Actions to automatically run:
 
-1. **Format**: Formateo del código con Black
-2. **Lint**: Análisis estático con Pylint
-3. **Test**: Ejecución de tests con pytest
+1. **Format**: Code formatting with Black
+2. **Lint**: Static analysis with Pylint
+3. **Test**: Test execution with pytest
 
-El pipeline se ejecuta en cada `push` y `pull_request` a la rama `main`.
+The pipeline runs on every `push` and `pull_request` to the `main` branch.
 
-## Clases de Predicción
+## Prediction Classes
 
-Las clases disponibles para la predicción aleatoria son:
-- perro
-- gato
-- coche
-- avión
-- barco
-- bicicleta
-- persona
-- casa
+The available classes for random prediction are:
+- dog
+- cat
+- car
+- airplane
+- ship
+- bicycle
+- person
+- house
 
-## Tecnologías Utilizadas
+## Technologies Used
 
 - **Python 3.12**
-- **Pillow (PIL)**: Procesamiento de imágenes
-- **Click**: Creación del CLI
-- **FastAPI**: Framework para la API
-- **Uvicorn**: Servidor ASGI
-- **Pytest**: Framework de testing
-- **Black**: Formateo de código
-- **Pylint**: Análisis estático
-- **uv**: Gestor de paquetes y entornos virtuales
+- **Pillow (PIL)**: Image processing
+- **Click**: CLI creation
+- **FastAPI**: API framework
+- **Uvicorn**: ASGI server
+- **Pytest**: Testing framework
+- **Black**: Code formatting
+- **Pylint**: Static analysis
+- **uv**: Package and virtual environment manager
 
-## Autor
+## Author
 
-[Tu Nombre] - Universidad Pública de Navarra
+Iñigo Goioketxea - Public University of Navarre
 
-## Licencia
+## License
 
 MIT License
+```
