@@ -1,4 +1,3 @@
-```markdown
 # MLOps-Lab1 - Image Processing Application
 
 ![CI Pipeline](https://github.com/igoikofanega/MLOps-Lab1-Demo/actions/workflows/CI.yml/badge.svg)
@@ -190,4 +189,3 @@ Iñigo Goioketxea - Public University of Navarre
 ## License
 
 MIT License
-```
