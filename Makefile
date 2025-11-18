@@ -3,7 +3,6 @@
 install:
     pip install uv &&\
 	uv sync
-	uv add pillow pylint pytest pytest-cov black click fastapi uvicorn jinja2 httpx
 
 lint:
 	uv run pylint mylib cli api tests --disable=R,C
