@@ -1,11 +1,11 @@
 """FastAPI application for image processing operations."""
 
-from fastapi import FastAPI, File, Form, UploadFile, HTTPException, Request
-from fastapi.responses import HTMLResponse, StreamingResponse
-from fastapi.templating import Jinja2Templates
-from PIL import Image
 import io
 
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
+from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.templating import Jinja2Templates
+from PIL import Image, UnidentifiedImageError
 from mylib.operations import (
     predict_class,
     resize_image,
@@ -16,6 +16,22 @@ from mylib.operations import (
 
 app = FastAPI(title="Image Processing API", version="1.0.0")
 templates = Jinja2Templates(directory="templates")
+
+
+async def get_image_from_uploadfile(file: UploadFile) -> Image.Image:
+    """Read an uploaded file, validate it's an image, and return a PIL Image object.
+
+    Args:
+        file: The uploaded file from a FastAPI endpoint.
+
+    Returns:
+        A PIL Image object.
+
+    Raises:
+        HTTPException: 400 if the file is not a valid image.
+    """
+    contents = await file.read()
+    return Image.open(io.BytesIO(contents))
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -48,18 +64,18 @@ async def predict_endpoint(file: UploadFile = File(...)) -> dict:
         HTTPException: 400 if the file is not a valid image or processing fails.
     """
     try:
-        contents = await file.read()
-        image = Image.open(io.BytesIO(contents))
-
+        image = await get_image_from_uploadfile(file)
         predicted_class = predict_class(image)
         info = get_image_info(image)
-
         return {
             "filename": file.filename,
             "predicted_class": predicted_class,
             "image_info": info,
         }
-
+    except UnidentifiedImageError as exc:
+        raise HTTPException(
+            status_code=400, detail="The provided file is not a valid image."
+        ) from exc
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error processing image: {str(e)}")
 
@@ -83,14 +99,11 @@ async def resize_endpoint(
     Raises:
         HTTPException: 400 if dimensions are invalid or image processing fails.
     """
-    try:
-        if width <= 0 or height <= 0:
-            raise HTTPException(
-                status_code=400, detail="Width and height must be positive integers"
-            )
+    if width <= 0 or height <= 0:
+        raise HTTPException(status_code=400, detail="Width and height must be positive integers")
 
-        contents = await file.read()
-        image = Image.open(io.BytesIO(contents))
+    try:
+        image = await get_image_from_uploadfile(file)
         resized_image = resize_image(image, width, height)
 
         img_byte_arr = io.BytesIO()
@@ -106,8 +119,10 @@ async def resize_endpoint(
             },
         )
 
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=f"Invalid dimensions: {str(e)}")
+    except UnidentifiedImageError as exc:
+        raise HTTPException(
+            status_code=400, detail="The provided file is not a valid image."
+        ) from exc
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error processing image: {str(e)}")
 
@@ -126,8 +141,7 @@ async def grayscale_endpoint(file: UploadFile = File(...)) -> StreamingResponse:
         HTTPException: 400 if the file is not a valid image or processing fails.
     """
     try:
-        contents = await file.read()
-        image = Image.open(io.BytesIO(contents))
+        image = await get_image_from_uploadfile(file)
         gray_image = convert_to_grayscale(image)
 
         img_byte_arr = io.BytesIO()
@@ -143,6 +157,10 @@ async def grayscale_endpoint(file: UploadFile = File(...)) -> StreamingResponse:
             },
         )
 
+    except UnidentifiedImageError as exc:
+        raise HTTPException(
+            status_code=400, detail="The provided file is not a valid image."
+        ) from exc
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error processing image: {str(e)}")
 
@@ -163,15 +181,17 @@ async def info_endpoint(file: UploadFile = File(...)) -> dict:
         HTTPException: 400 if the file is not a valid image.
     """
     try:
-        contents = await file.read()
-        image = Image.open(io.BytesIO(contents))
+        image = await get_image_from_uploadfile(file)
         info = get_image_info(image)
 
         return {
             "filename": file.filename,
             "image_info": info,
         }
-
+    except UnidentifiedImageError as exc:
+        raise HTTPException(
+            status_code=400, detail="The provided file is not a valid image."
+        ) from exc
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error processing image: {str(e)}")
 
