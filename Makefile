@@ -26,3 +26,4 @@ clean:
 	find . -type d -name "htmlcov" -exec rm -rf {} +
 	find . -type f -name "*_resized_*" -delete
 	find . -type f -name "*_grayscale*" -delete
+	
