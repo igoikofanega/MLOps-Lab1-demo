@@ -34,20 +34,20 @@ def sample_image_bytes() -> io.BytesIO:
     return img_bytes
 
 
-def test_home_endpoint(client: TestClient) -> None:
+def test_home_endpoint(test_client: TestClient) -> None:
     """Test that the root endpoint returns the expected HTML page.
 
     Args:
-        client: FastAPI test client fixture.
+        test_client: FastAPI test client fixture.
     """
-    response = client.get("/")
+    response = test_client.get("/")
 
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]
 
 
 def test_predict_endpoint_success(
-    client: TestClient, sample_image_bytes: io.BytesIO
+    test_client: TestClient, sample_image_bytes: io.BytesIO
 ) -> None:
     """Test successful image classification via /predict endpoint.
 
@@ -56,7 +56,7 @@ def test_predict_endpoint_success(
         sample_image_bytes: Valid JPEG image as bytes.
     """
     files = {"file": ("test.jpg", sample_image_bytes, "image/jpeg")}
-    response = client.post("/predict", files=files)
+    response = test_client.post("/predict", files=files)
 
     assert response.status_code == 200
     data = response.json()
@@ -66,42 +66,42 @@ def test_predict_endpoint_success(
     assert "image_info" in data
 
 
-def test_predict_endpoint_no_file(client: TestClient) -> None:
+def test_predict_endpoint_no_file(test_client: TestClient) -> None:
     """Test /predict endpoint when no file is uploaded.
 
     Args:
         client: FastAPI test client fixture.
     """
-    response = client.post("/predict")
+    response = test_client.post("/predict")
 
     assert response.status_code == 422  # Unprocessable Entity (missing required field)
 
 
-def test_predict_endpoint_invalid_file(client: TestClient) -> None:
+def test_predict_endpoint_invalid_file(test_client: TestClient) -> None:
     """Test /predict endpoint with a non-image file upload.
 
     Args:
         client: FastAPI test client fixture.
     """
     files = {"file": ("test.txt", io.BytesIO(b"not an image"), "text/plain")}
-    response = client.post("/predict", files=files)
+    response = test_client.post("/predict", files=files)
 
     assert response.status_code == 400
 
 
 def test_resize_endpoint_success(
-    client: TestClient, sample_image_bytes: io.BytesIO
+    test_client: TestClient, sample_image_bytes: io.BytesIO
 ) -> None:
     """Test successful image resizing via /resize endpoint.
 
     Args:
-        client: FastAPI test client fixture.
+        test_client: FastAPI test client fixture.
         sample_image_bytes: Valid JPEG image as bytes.
     """
     files = {"file": ("test.jpg", sample_image_bytes, "image/jpeg")}
     data = {"width": "50", "height": "75"}
 
-    response = client.post("/resize", files=files, data=data)
+    response = test_client.post("/resize", files=files, data=data)
 
     assert response.status_code == 200
     assert "image/" in response.headers["content-type"]
@@ -110,79 +110,79 @@ def test_resize_endpoint_success(
     assert img.size == (50, 75)
 
 
-def test_resize_endpoint_no_file(client: TestClient) -> None:
+def test_resize_endpoint_no_file(test_client: TestClient) -> None:
     """Test /resize endpoint when no file is provided.
 
     Args:
-        client: FastAPI test client fixture.
+        test_client: FastAPI test client fixture.
     """
     data = {"width": "50", "height": "75"}
-    response = client.post("/resize", data=data)
+    response = test_client.post("/resize", data=data)
 
     assert response.status_code == 422
 
 
 def test_resize_endpoint_missing_dimensions(
-    client: TestClient, sample_image_bytes: io.BytesIO
+    test_client: TestClient, sample_image_bytes: io.BytesIO
 ) -> None:
     """Test /resize endpoint when width or height is missing.
 
     Args:
-        client: FastAPI test client fixture.
+        test_client: FastAPI test client fixture.
         sample_image_bytes: Valid JPEG image as bytes.
     """
     files = {"file": ("test.jpg", sample_image_bytes, "image/jpeg")}
-    response = client.post("/resize", files=files)
+    response = test_client.post("/resize", files=files)
 
     assert response.status_code == 422
 
 
 def test_resize_endpoint_invalid_dimensions(
-    client: TestClient, sample_image_bytes: io.BytesIO
+    test_client: TestClient, sample_image_bytes: io.BytesIO
 ) -> None:
     """Test /resize endpoint with negative or invalid dimensions.
 
     Args:
-        client: FastAPI test client fixture.
+        test_client: FastAPI test client fixture.
         sample_image_bytes: Valid JPEG image as bytes.
     """
     files = {"file": ("test.jpg", sample_image_bytes, "image/jpeg")}
     data = {"width": "-50", "height": "75"}
 
-    response = client.post("/resize", files=files, data=data)
+    response = test_client.post("/resize", files=files, data=data)
 
     assert response.status_code == 400
 
 
 def test_resize_endpoint_zero_dimensions(
-    client: TestClient, sample_image_bytes: io.BytesIO
+    test_client: TestClient, sample_image_bytes: io.BytesIO
 ) -> None:
     """Test /resize endpoint with zero as dimension value.
 
     Args:
-        client: FastAPI test client fixture.
+        test_client: FastAPI test client fixture.
         sample_image_bytes: Valid JPEG image as bytes.
     """
     files = {"file": ("test.jpg", sample_image_bytes, "image/jpeg")}
     data = {"width": "0", "height": "75"}
 
-    response = client.post("/resize", files=files, data=data)
+    response = test_client.post("/resize", files=files, data=data)
 
     assert response.status_code == 400
 
 
 def test_grayscale_endpoint_success(
-    client: TestClient, sample_image_bytes: io.BytesIO
+    test_client: TestClient, sample_image_bytes: io.BytesIO
 ) -> None:
     """Test successful grayscale conversion via /grayscale endpoint.
 
     Args:
-        client: FastAPI test client fixture.
+        test_client: FastAPI test client fixture.
         sample_image_bytes: Valid JPEG image as bytes.
     """
     files = {"file": ("test.jpg", sample_image_bytes, "image/jpeg")}
 
-    response = client.post("/grayscale", files=files)
+    response = test_client.post("/grayscale", files=files)
 
     assert response.status_code == 200
     assert "image/" in response.headers["content-type"]
@@ -191,41 +191,41 @@ def test_grayscale_endpoint_success(
     assert img.mode == "L"
 
 
-def test_grayscale_endpoint_no_file(client: TestClient) -> None:
+def test_grayscale_endpoint_no_file(test_client: TestClient) -> None:
     """Test /grayscale endpoint when no file is uploaded.
 
     Args:
-        client: FastAPI test client fixture.
+        test_client: FastAPI test client fixture.
     """
-    response = client.post("/grayscale")
+    response = test_client.post("/grayscale")
 
     assert response.status_code == 422
 
 
-def test_grayscale_endpoint_invalid_file(client: TestClient) -> None:
+def test_grayscale_endpoint_invalid_file(test_client: TestClient) -> None:
     """Test /grayscale endpoint with a non-image file.
 
     Args:
-        client: FastAPI test client fixture.
+        test_client: FastAPI test client fixture.
     """
     files = {"file": ("test.txt", io.BytesIO(b"not an image"), "text/plain")}
-    response = client.post("/grayscale", files=files)
+    response = test_client.post("/grayscale", files=files)
 
     assert response.status_code == 400
 
 
 def test_info_endpoint_success(
-    client: TestClient, sample_image_bytes: io.BytesIO
+    test_client: TestClient, sample_image_bytes: io.BytesIO
 ) -> None:
     """Test successful image info retrieval via /info endpoint.
 
     Args:
-        client: FastAPI test client fixture.
+        test_client: FastAPI test client fixture.
         sample_image_bytes: Valid JPEG image as bytes.
     """
     files = {"file": ("test.jpg", sample_image_bytes, "image/jpeg")}
 
-    response = client.post("/info", files=files)
+    response = test_client.post("/info", files=files)
 
     assert response.status_code == 200
     data = response.json()
@@ -236,24 +236,24 @@ def test_info_endpoint_success(
     assert "height" in data["image_info"]
 
 
-def test_info_endpoint_no_file(client: TestClient) -> None:
+def test_info_endpoint_no_file(test_client: TestClient) -> None:
     """Test /info endpoint when no file is uploaded.
 
     Args:
-        client: FastAPI test client fixture.
+        test_client: FastAPI test client fixture.
     """
-    response = client.post("/info")
+    response = test_client.post("/info")
 
     assert response.status_code == 422
 
 
-def test_info_endpoint_invalid_file(client: TestClient) -> None:
+def test_info_endpoint_invalid_file(test_client: TestClient) -> None:
     """Test /info endpoint with a non-image file.
 
     Args:
-        client: FastAPI test client fixture.
+        test_client: FastAPI test client fixture.
     """
     files = {"file": ("test.txt", io.BytesIO(b"not an image"), "text/plain")}
-    response = client.post("/info", files=files)
+    response = test_client.post("/info", files=files)
 
     assert response.status_code == 400

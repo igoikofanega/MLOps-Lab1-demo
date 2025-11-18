@@ -3,13 +3,13 @@ install:
 	uv sync
 
 lint:
-	uv run pylint mylib cli api tests --disable=R,C
+	uv run python -m pytest tests/ -vv --cov=mylib --cov=api --cov=cli
 
 format:
 	uv run black mylib cli api tests
 
 test:
-	uv run python -m pytest tests/ -v --cov=mylib --cov=cli --cov=api --cov-report=term-missing
+	uv run pylint --disable=R,C --ignore-patterns=test_.*\.py mylib/*.py cli/*.py api/*.py
 
 refactor: format lint
 

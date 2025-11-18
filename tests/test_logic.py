@@ -147,3 +147,4 @@ def test_get_image_info_returns_dict(sample_image: Image.Image) -> None:
     """
     info = get_image_info(sample_image)
     assert isinstance(info, dict)
+    
