@@ -1,6 +1,6 @@
 # MLOps-Lab1 - Image Processing Application
 
-![CI Pipeline](https://github.com/YOUR_USERNAME/MLOps-Lab1/actions/workflows/CI.yml/badge.svg)
+![CI Pipeline](https://github.com/igoikofanega/MLOps-Lab1-Demo/actions/workflows/CI.yml/badge.svg)
 
 ## Descripción
 
