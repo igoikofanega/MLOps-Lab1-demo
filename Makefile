@@ -15,12 +15,3 @@ refactor: format lint
 
 all: install format lint test
 
-clean:
-	find . -type d -name "__pycache__" -exec rm -rf {} +
-	find . -type f -name "*.pyc" -delete
-	find . -type d -name ".pytest_cache" -exec rm -rf {} +
-	find . -type d -name ".coverage" -exec rm -rf {} +
-	find . -type d -name "htmlcov" -exec rm -rf {} +
-	find . -type f -name "*_resized_*" -delete
-	find . -type f -name "*_grayscale*" -delete
-
