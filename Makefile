@@ -9,7 +9,7 @@ format:
 	uv run black mylib cli api tests
 
 test:
-	uv run pylint --disable=R,C --ignore-patterns=test_.*\.py mylib/*.py cli/*.py api/*.py
+	uv run python -m pytest tests/ -vv --cov=mylib --cov=api --cov=cli
 
 refactor: format lint
 
