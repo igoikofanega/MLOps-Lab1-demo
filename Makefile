@@ -1,7 +1,6 @@
 .PHONY: install lint format test refactor all clean
 
 install:
-    command -v uv || pip install uv
 	uv sync
 	uv add pillow pylint pytest pytest-cov black click fastapi uvicorn jinja2 httpx
 
@@ -26,4 +25,4 @@ clean:
 	find . -type d -name "htmlcov" -exec rm -rf {} +
 	find . -type f -name "*_resized_*" -delete
 	find . -type f -name "*_grayscale*" -delete
-	
+
