@@ -47,7 +47,7 @@ MLOps-Lab1/
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/YOUR_USERNAME/MLOps-Lab1.git
+git clone https://github.com/igoikofanega/MLOps-Lab1.git
 cd MLOps-Lab1
 ```
 
