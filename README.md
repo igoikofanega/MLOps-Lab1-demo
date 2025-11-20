@@ -71,24 +71,22 @@ make install
 
 #### Predict class of an image:
 ```bash
-uv run python -m cli.cli predict /home/student/Desktop/data/inigo.goikoetxea/MLOps/image.jpg
+uv run python -m cli.cli predict path/to/image.jpg
 ```
 
 #### Resize an image:
 ```bash
-uv run python -m cli.cli resize path/to/image.jpg 200 200
-uv run python -m cli.cli resize /home/student/Desktop/data/inigo.goikoetxea/MLOps/image.jpg 200 200 --output resized.jpg
+uv run python -m cli.cli resize path/to/image.jpg 200 200 --output resized.jpg
 ```
 
 #### Convert to grayscale:
 ```bash
-uv run python -m cli.cli grayscale path/to/image.jpg
-uv run python -m cli.cli grayscale /home/student/Desktop/data/inigo.goikoetxea/MLOps/image.jpg --output gray.jpg
+uv run python -m cli.cli grayscale path/to/image.jpg --output gray.jpg
 ```
 
 #### Get image information:
 ```bash
-uv run python -m cli.cli info /home/student/Desktop/data/inigo.goikoetxea/MLOps/image.jpg
+uv run python -m cli.cli info path/to/image.jpg
 ```
 
 ### API (FastAPI)
