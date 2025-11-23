@@ -86,7 +86,10 @@ def test_predict_endpoint_invalid_file(test_client: TestClient) -> None:
     files = {"file": ("test.txt", io.BytesIO(b"not an image"), "text/plain")}
     response = test_client.post("/predict", files=files)
 
-    assert response.status_code == 400
+    assert response.status_code == 400, f"Expected 400, got {response.status_code}"
+    data = response.json()
+    assert "detail" in data
+    assert data["detail"] == "The provided file is not a valid image."
 
 
 def test_resize_endpoint_success(
@@ -211,7 +214,10 @@ def test_grayscale_endpoint_invalid_file(test_client: TestClient) -> None:
     files = {"file": ("test.txt", io.BytesIO(b"not an image"), "text/plain")}
     response = test_client.post("/grayscale", files=files)
 
-    assert response.status_code == 400
+    assert response.status_code == 400, f"Expected 400, got {response.status_code}"
+    data = response.json()
+    assert "detail" in data
+    assert data["detail"] == "The provided file is not a valid image."
 
 
 def test_info_endpoint_success(
@@ -256,4 +262,7 @@ def test_info_endpoint_invalid_file(test_client: TestClient) -> None:
     files = {"file": ("test.txt", io.BytesIO(b"not an image"), "text/plain")}
     response = test_client.post("/info", files=files)
 
-    assert response.status_code == 400
+    assert response.status_code == 400, f"Expected 400, got {response.status_code}"
+    data = response.json()
+    assert "detail" in data
+    assert data["detail"] == "The provided file is not a valid image."
